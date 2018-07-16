@@ -6,9 +6,6 @@ import (
 	"github.com/dimaskiddo/simple-go/api-mongo/helpers"
 )
 
-var SvcIP string
-var SvcPort string
-
 var CORSAllowedHeaders []string
 var CORSAllowedOrigins []string
 var CORSAllowedMethods []string
@@ -16,19 +13,19 @@ var CORSAllowedMethods []string
 // Initialize Configuration Variable
 func Initialize() {
 	// Get Service IP from Environment Variable
-	SvcIP = os.Getenv("SERVICE_IP")
-	if len(SvcIP) == 0 {
+	helpers.ServerConfig.IP = os.Getenv("SERVICE_IP")
+	if len(helpers.ServerConfig.IP) == 0 {
 		// If Service IP Environment Variable Not Exist
 		// Then Set Service IP Variable to Default Value
-		SvcIP = "0.0.0.0"
+		helpers.ServerConfig.IP = "0.0.0.0"
 	}
 
 	// Get Service Port from Environment Variable
-	SvcPort = os.Getenv("SERVICE_PORT")
-	if len(SvcPort) == 0 {
+	helpers.ServerConfig.Port = os.Getenv("SERVICE_PORT")
+	if len(helpers.ServerConfig.Port) == 0 {
 		// If Service Port Environment Variable Not Exist
 		// Then Set Service Port Variable to Default Value
-		SvcPort = "3000"
+		helpers.ServerConfig.Port = "3000"
 	}
 
 	// Get CORS Allowed Headers from Environment Variable
@@ -64,42 +61,42 @@ func Initialize() {
 	}
 
 	// Get Database Host from Environment Variable
-	helpers.DBConfig.Host = os.Getenv("DB_HOST")
-	if len(helpers.DBConfig.Host) == 0 {
+	helpers.MongoConfig.Host = os.Getenv("DB_HOST")
+	if len(helpers.MongoConfig.Host) == 0 {
 		// If Database Host Environment Variable Not Exist
 		// Then Set Database Host Variable to Default Value
-		helpers.DBConfig.Host = "127.0.0.1"
+		helpers.MongoConfig.Host = "127.0.0.1"
 	}
 
 	// Get Database Port from Environment Variable
-	helpers.DBConfig.Port = os.Getenv("DB_PORT")
-	if len(helpers.DBConfig.Port) == 0 {
+	helpers.MongoConfig.Port = os.Getenv("DB_PORT")
+	if len(helpers.MongoConfig.Port) == 0 {
 		// If Database Port Environment Variable Not Exist
 		// Then Set Database Port Variable to Default Value
-		helpers.DBConfig.Port = "27017"
+		helpers.MongoConfig.Port = "27017"
 	}
 
 	// Get Database User from Environment Variable
-	helpers.DBConfig.User = os.Getenv("DB_USER")
-	if len(helpers.DBConfig.User) == 0 {
+	helpers.MongoConfig.User = os.Getenv("DB_USER")
+	if len(helpers.MongoConfig.User) == 0 {
 		// If Database User Environment Variable Not Exist
 		// Then Set Database User Variable to Default Value
-		helpers.DBConfig.User = "user"
+		helpers.MongoConfig.User = "user"
 	}
 
 	// Get Database Password from Environment Variable
-	helpers.DBConfig.Password = os.Getenv("DB_PASSWORD")
-	if len(helpers.DBConfig.Password) == 0 {
+	helpers.MongoConfig.Password = os.Getenv("DB_PASSWORD")
+	if len(helpers.MongoConfig.Password) == 0 {
 		// If Database Password Environment Variable Not Exist
 		// Then Set Database Password Variable to Default Value
-		helpers.DBConfig.Password = "password"
+		helpers.MongoConfig.Password = "password"
 	}
 
 	// Get Database Name from Environment Variable
-	helpers.DBConfig.Name = os.Getenv("DB_NAME")
-	if len(helpers.DBConfig.Name) == 0 {
+	helpers.MongoConfig.Name = os.Getenv("DB_NAME")
+	if len(helpers.MongoConfig.Name) == 0 {
 		// If Database Name Environment Variable Not Exist
 		// Then Set Database Name Variable to Default Value
-		helpers.DBConfig.Name = "dbs"
+		helpers.MongoConfig.Name = "dbs"
 	}
 }

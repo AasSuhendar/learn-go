@@ -2,9 +2,9 @@ package main
 
 import (
 	"fmt"
-	"log"
-	"net/http"
 	"os"
+	"os/signal"
+	"syscall"
 
 	"github.com/dimaskiddo/simple-go/api-mysql/configs"
 	"github.com/dimaskiddo/simple-go/api-mysql/controllers"
@@ -15,8 +15,15 @@ import (
 )
 
 func main() {
+	// Initialize Channel for OS Signal
+	signalOS := make(chan os.Signal, 1)
+
 	// Initialize Configuration
 	configs.Initialize()
+
+	// Initialize Database
+	helpers.DB = helpers.MySQLConnect()
+	defer helpers.DB.Close()
 
 	// Initialize CORS Configurataion
 	corsAllowedHeaders := handlers.AllowedHeaders(configs.CORSAllowedHeaders)
@@ -28,7 +35,6 @@ func main() {
 
 	// Initialize Router Endpoint
 	router.HandleFunc("/", controllers.GetIndex).Methods("GET")
-	router.HandleFunc("/auth", controllers.GetAuthentication).Methods("POST")
 
 	// Initialize Router Endpoint Secured With Basic Auth
 	router.Handle("/basic-auth", helpers.AuthBasic(controllers.GetAuthentication)).Methods("GET", "POST")
@@ -43,7 +49,19 @@ func main() {
 	// Set Router Handler with Logging & CORS Support
 	routerHandler := handlers.LoggingHandler(os.Stdout, handlers.CORS(corsAllowedHeaders, corsAllowedOrigins, corsAllowedMethods)(router))
 
-	// Start The HTTP Web Server
-	fmt.Println("Application Serving at", configs.SvcIP+":"+configs.SvcPort)
-	log.Fatal(http.ListenAndServe(configs.SvcIP+":"+configs.SvcPort, routerHandler))
+	// Initialize Server With Initialized Router
+	server := helpers.NewServer(routerHandler)
+
+	// Starting Server
+	server.Start()
+	defer server.Stop()
+
+	// Catch OS Signal from Channel
+	signal.Notify(signalOS, os.Interrupt, syscall.SIGTERM)
+
+	// Return OS Signal as Exit Code
+	<-signalOS
+
+	// Add Some Spaces When Done
+	fmt.Println("")
 }
