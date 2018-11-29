@@ -8,6 +8,20 @@ networks:
     driver: bridge
 
 services:
+  main:
+    build: .
+    image: 'dimaskiddo/api-mysql:latest'
+    networks:
+      - learngonet
+    ports:
+      - 3000:3000
+    environment:
+      - CONFIG_DB_HOST=mysql
+      - CONFIG_DB_USER=user
+      - CONFIG_DB_PASSWORD=password
+      - CONFIG_DB_DATABASE=dbs
+    restart: always
+
   mysql:
     image: 'dimaskiddo/alpine:mysql-10.2'
     networks:
